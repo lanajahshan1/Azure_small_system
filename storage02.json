@@ -96,14 +96,6 @@
         "isVersioningEnabled": {
             "type": "bool",
             "defaultvalue": false
-        },
-        "isShareSoftDeleteEnabled": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "shareSoftDeleteRetentionDays": {
-            "type": "int",
-            "defaultvalue": 7
         }
     },
     "variables": {},
@@ -113,40 +105,6 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
             "location": "[resourceGroup().location]",
-            "properties": {
-                "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-                "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]",
-                "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
-                "allowSharedKeyAccess": "[parameters('allowSharedKeyAccess')]",
-                "defaultToOAuthAuthentication": "[parameters('defaultOAuth')]",
-                "accessTier": "[parameters('accessTier')]",
-                "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-                "allowCrossTenantReplication": "[parameters('allowCrossTenantReplication')]",
-                "networkAcls": {
-                    "bypass": "[parameters('networkAclsBypass')]",
-                    "defaultAction": "[parameters('networkAclsDefaultAction')]",
-                    "ipRules": []
-                },
-                "dnsEndpointType": "[parameters('dnsEndpointType')]",
-                "encryption": {
-                    "keySource": "[parameters('keySource')]",
-                    "services": {
-                        "blob": {
-                            "enabled": "[parameters('encryptionEnabled')]"
-                        },
-                        "file": {
-                            "enabled": "[parameters('encryptionEnabled')]"
-                        },
-                        "table": {
-                            "enabled": "[parameters('encryptionEnabled')]"
-                        },
-                        "queue": {
-                            "enabled": "[parameters('encryptionEnabled')]"
-                        }
-                    },
-                    "requireInfrastructureEncryption": "[parameters('infrastructureEncryptionEnabled')]"
-                }
-            },
             "dependsOn": [],
             "sku": {
                 "name": "[parameters('accountType')]"
@@ -158,40 +116,8 @@
             "name": "[concat(parameters('storageName'), '/default')]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
-            "properties": {
-                "restorePolicy": {
-                    "enabled": "[parameters('isContainerRestoreEnabled')]"
-                },
-                "deleteRetentionPolicy": {
-                    "enabled": "[parameters('isBlobSoftDeleteEnabled')]",
-                    "days": "[parameters('blobSoftDeleteRetentionDays')]"
-                },
-                "containerDeleteRetentionPolicy": {
-                    "enabled": "[parameters('isContainerSoftDeleteEnabled')]",
-                    "days": "[parameters('containerSoftDeleteRetentionDays')]"
-                },
-                "changeFeed": {
-                    "enabled": "[parameters('changeFeed')]"
-                },
-                "isVersioningEnabled": "[parameters('isVersioningEnabled')]"
-            },
             "dependsOn": [
                 "[concat('Microsoft.Storage/storageAccounts/', parameters('storageName'))]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('storageName'), '/default')]",
-            "type": "Microsoft.Storage/storageAccounts/fileservices",
-            "apiVersion": "2022-05-01",
-            "properties": {
-                "shareDeleteRetentionPolicy": {
-                    "enabled": "[parameters('isShareSoftDeleteEnabled')]",
-                    "days": "[parameters('shareSoftDeleteRetentionDays')]"
-                }
-            },
-            "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageName'))]",
-                "[concat(concat('Microsoft.Storage/storageAccounts/', parameters('storageName')), '/blobServices/default')]"
             ]
         }
     ],
