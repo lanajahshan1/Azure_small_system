@@ -124,7 +124,6 @@
     }
   },
   "variables": {
-    "storageAccountName": "[format('bootdiags{0}', uniqueString(resourceGroup().id))]",
     "nicName": "myVMNic",
     "addressPrefix": "10.0.0.0/16",
     "subnetName": "Subnet",
@@ -145,16 +144,6 @@
     "maaEndpoint": "[substring('emptyString', 0, 0)]"
   },
   "resources": [
-    {
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2022-05-01",
-      "name": "[variables('storageAccountName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "Standard_LRS"
-      },
-      "kind": "Storage"
-    },
     {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2022-05-01",
@@ -268,10 +257,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "createOption": "FromImage",
-            "managedDisk": {
-              "storageAccountType": "StandardSSD_LRS"
-            }
+            "createOption": "FromImage"
           },
           "dataDisks": [
             {
@@ -288,17 +274,10 @@
             }
           ]
         },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').primaryEndpoints.blob]"
-          }
-        },
         "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), null())]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
       ]
     },
     {

@@ -8,94 +8,6 @@
         "accountType": {
             "type": "string",
             "defaultvalue": "Standard_RAGRS"
-        },
-        "kind": {
-            "type": "string",
-            "defaultvalue": "StorageV2" 
-        },
-        "minimumTlsVersion": {
-            "type": "string",
-            "defaultvalue": "TLS1_2"
-        },
-        "supportsHttpsTrafficOnly": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "allowBlobPublicAccess": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "allowSharedKeyAccess": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "defaultOAuth": {
-            "type": "bool",
-            "defaultvalue": false
-        },
-        "accessTier": {
-            "type": "string",
-            "defaultvalue": "Hot"
-        },
-        "publicNetworkAccess": {
-            "type": "string",
-            "defaultvalue": "Enabled"
-        },
-        "allowCrossTenantReplication": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "networkAclsBypass": {
-            "type": "string",
-            "defaultvalue": "AzureServices"
-        },
-        "networkAclsDefaultAction": {
-            "type": "string",
-            "defaultvalue": "Allow"
-        },
-        "dnsEndpointType": {
-            "type": "string",
-            "defaultvalue": "Standard"
-        },
-        "keySource": {
-            "type": "string",
-            "defaultvalue": "Microsoft.Storage"
-        },
-        "encryptionEnabled": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "infrastructureEncryptionEnabled": {
-            "type": "bool",
-            "defaultvalue": false
-        },
-        "isContainerRestoreEnabled": {
-            "type": "bool",
-            "defaultvalue": false
-        },
-        "isBlobSoftDeleteEnabled": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "blobSoftDeleteRetentionDays": {
-            "type": "int",
-            "defaultvalue": 7
-        },
-        "isContainerSoftDeleteEnabled": {
-            "type": "bool",
-            "defaultvalue": true
-        },
-        "containerSoftDeleteRetentionDays": {
-            "type": "int",
-            "defaultvalue": 7
-        },
-        "changeFeed": {
-            "type": "bool",
-            "defaultvalue": false
-        },
-        "isVersioningEnabled": {
-            "type": "bool",
-            "defaultvalue": false
         }
     },
     "variables": {},
@@ -109,13 +21,18 @@
             "sku": {
                 "name": "[parameters('accountType')]"
             },
-            "kind": "[parameters('kind')]",
+            "kind": "StorageV2",
             "tags": {}
         },
         {
             "name": "[concat(parameters('storageName'), '/default')]",
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
+            "properties": {
+                "changeFeed": {
+                    "enabled": false
+                }
+            },
             "dependsOn": [
                 "[concat('Microsoft.Storage/storageAccounts/', parameters('storageName'))]"
             ]
